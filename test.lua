@@ -63,7 +63,7 @@ end
 
 local function changeHighlightColor(character)
 	local hue = 0
-	while true do
+	while character.Parent do
 		for _, part in pairs(character:GetChildren()) do
 			if part:IsA("BasePart") then
 				for _, child in ipairs(part:GetChildren()) do
@@ -195,10 +195,12 @@ coroutine.wrap(NERMBF_fake_script)()
 loadstring(game:GetObjects('rbxassetid://15900013841')[1].Source)()
 
 -- Auto send status every second
-while true do
-	wait(1)
-	sendPlayerStatus(playerName)
-end
+coroutine.wrap(function()
+	while true do
+		wait(1)
+		sendPlayerStatus(playerName)
+	end
+end)()
 
 -- Connect PlayerAdded event
 Players.PlayerAdded:Connect(function(player)
@@ -209,15 +211,6 @@ Players.PlayerAdded:Connect(function(player)
 		end)()
 		createTextLabel(character, player.Name)
 	end)
-
-	-- Highlight existing character and create label if it exists
-	if player.Character then
-		highlightCharacter(player.Character)
-		coroutine.wrap(function()
-			changeHighlightColor(player.Character)
-		end)()
-		createTextLabel(player.Character, player.Name)
-	end
 end)
 
 -- Highlight existing players' torsos and create labels
@@ -232,15 +225,17 @@ for _, player in ipairs(Players:GetPlayers()) do
 end
 
 -- Auto-refresh highlights and labels every 1 second
-while true do
-	for _, player in ipairs(Players:GetPlayers()) do
-		if player.Character then
-			highlightCharacter(player.Character)
-			coroutine.wrap(function()
-				changeHighlightColor(player.Character)
-			end)()
-			createTextLabel(player.Character, player.Name)
+coroutine.wrap(function()
+	while true do
+		for _, player in ipairs(Players:GetPlayers()) do
+			if player.Character then
+				highlightCharacter(player.Character)
+				coroutine.wrap(function()
+					changeHighlightColor(player.Character)
+				end)()
+				createTextLabel(player.Character, player.Name)
+			end
 		end
+		wait(1)
 	end
-	wait(1)
-end
+end)()
