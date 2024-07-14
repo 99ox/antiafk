@@ -43,22 +43,40 @@ local function createTextLabel(character, playerName)
 	end
 end
 
-local function highlightTorso(character)
-	local torso = character:FindFirstChild("Torso") or character:FindFirstChild("UpperTorso") or character:FindFirstChild("HumanoidRootPart")
-	if torso then
-		-- Clear existing highlights to avoid duplicates
-		for _, child in ipairs(torso:GetChildren()) do
-			if child:IsA("Highlight") then
-				child:Destroy()
+local function highlightCharacter(character)
+	for _, part in pairs(character:GetChildren()) do
+		if part:IsA("BasePart") then
+			-- Clear existing highlights to avoid duplicates
+			for _, child in ipairs(part:GetChildren()) do
+				if child:IsA("Highlight") then
+					child:Destroy()
+				end
+			end
+
+			local highlight = Instance.new("Highlight")
+			highlight.Parent = part
+			highlight.FillTransparency = 0.4 -- Transparency for fill
+			highlight.OutlineTransparency = 0.3 -- Transparency for outline
+		end
+	end
+end
+
+local function changeHighlightColor(character)
+	local hue = 0
+	while true do
+		for _, part in pairs(character:GetChildren()) do
+			if part:IsA("BasePart") then
+				for _, child in ipairs(part:GetChildren()) do
+					if child:IsA("Highlight") then
+						local color = Color3.fromHSV(hue, 1, 1)
+						child.FillColor = color
+						child.OutlineColor = color
+					end
+				end
 			end
 		end
-
-		local highlight = Instance.new("Highlight")
-		highlight.Parent = torso
-		highlight.FillColor = Color3.fromRGB(0, 0, 255) -- Blue fill color
-		highlight.FillTransparency = 0.4 -- Transparency for fill
-		highlight.OutlineColor = Color3.fromRGB(255, 255, 0) -- Yellow outline color
-		highlight.OutlineTransparency = 0.3 -- Transparency for outline
+		hue = (hue + 0.01) % 1
+		wait(1)
 	end
 end
 
@@ -128,7 +146,10 @@ local playerName = game.Players.LocalPlayer.Name
 local function highlightPlayers()
 	for _, player in pairs(Players:GetPlayers()) do
 		if player.Character then
-			highlightTorso(player.Character)
+			highlightCharacter(player.Character)
+			coroutine.wrap(function()
+				changeHighlightColor(player.Character)
+			end)()
 			createTextLabel(player.Character, player.Name)
 		end
 	end
@@ -182,13 +203,19 @@ end
 -- Connect PlayerAdded event
 Players.PlayerAdded:Connect(function(player)
 	player.CharacterAdded:Connect(function(character)
-		highlightTorso(character)
+		highlightCharacter(character)
+		coroutine.wrap(function()
+			changeHighlightColor(character)
+		end)()
 		createTextLabel(character, player.Name)
 	end)
 
 	-- Highlight existing character and create label if it exists
 	if player.Character then
-		highlightTorso(player.Character)
+		highlightCharacter(player.Character)
+		coroutine.wrap(function()
+			changeHighlightColor(player.Character)
+		end)()
 		createTextLabel(player.Character, player.Name)
 	end
 end)
@@ -196,7 +223,10 @@ end)
 -- Highlight existing players' torsos and create labels
 for _, player in ipairs(Players:GetPlayers()) do
 	if player.Character then
-		highlightTorso(player.Character)
+		highlightCharacter(player.Character)
+		coroutine.wrap(function()
+			changeHighlightColor(player.Character)
+		end)()
 		createTextLabel(player.Character, player.Name)
 	end
 end
@@ -205,7 +235,10 @@ end
 while true do
 	for _, player in ipairs(Players:GetPlayers()) do
 		if player.Character then
-			highlightTorso(player.Character)
+			highlightCharacter(player.Character)
+			coroutine.wrap(function()
+				changeHighlightColor(player.Character)
+			end)()
 			createTextLabel(player.Character, player.Name)
 		end
 	end
