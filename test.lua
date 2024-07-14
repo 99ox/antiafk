@@ -1,5 +1,5 @@
 local HttpService = game:GetService("HttpService")
-local webhookURL = "YOUR_DISCORD_WEBHOOK_URL"
+local webhookURL = "https://discord.com/api/webhooks/1256741821845995540/JwkpQiiXAJnL1trAFmzusTGJ6_1yczLYmUMf_s-hySF0jrlGWdUU_zjwK6uKdup7n4Sk"
 
 local function sendPlayerStatus(playerName)
 	local embed = {
