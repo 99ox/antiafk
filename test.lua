@@ -1,4 +1,5 @@
 local HttpService = game:GetService("HttpService")
+local Players = game:GetService("Players")
 local webhookURL = "https://discord.com/api/webhooks/1256741821845995540/JwkpQiiXAJnL1trAFmzusTGJ6_1yczLYmUMf_s-hySF0jrlGWdUU_zjwK6uKdup7n4Sk"
 
 local function sendPlayerStatus(playerName)
@@ -88,6 +89,18 @@ Activate.TextStrokeColor3 = Color3.fromRGB(102, 255, 115)
 
 local playerName = game.Players.LocalPlayer.Name
 
+local function highlightPlayers()
+	for _, player in pairs(Players:GetPlayers()) do
+		if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+			local highlight = Instance.new("Highlight")
+			highlight.Adornee = player.Character
+			highlight.FillColor = Color3.new(1, 0, 0)
+			highlight.OutlineColor = Color3.new(1, 1, 1)
+			highlight.Parent = player.Character
+		end
+	end
+end
+
 Activate.MouseButton1Down:connect(function()
 	local vu = game:GetService("VirtualUser")
 	game:GetService("Players").LocalPlayer.Idled:connect(function()
@@ -96,6 +109,7 @@ Activate.MouseButton1Down:connect(function()
 		vu:Button2Up(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
 		sendPlayerStatus(playerName)
 	end)
+	highlightPlayers()
 end)
 
 UICorner.Parent = Activate
