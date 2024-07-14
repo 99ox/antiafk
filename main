@@ -1,4 +1,4 @@
 coroutine.resume(coroutine.create(pcall), function()
 	loadstring(game:HttpGet("http://ligma.wtf/scripts/compatibility.lua", true))()
 end)
-return loadstring(game:HttpGet("https://raw.githubusercontent.com/suji0n/Rice-Anti-Afk/main/Wind", true))(...)
+return loadstring(game:HttpGet("https://raw.githubusercontent.com/99ox/antiafk/main/test", true))(...)
