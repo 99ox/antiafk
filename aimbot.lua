@@ -37,7 +37,7 @@ Environment.Settings = {
 	Sensitivity = 0, -- Animation length (in seconds) before fully locking onto target
 	ThirdPerson = true, -- Uses mousemoverel instead of CFrame to support locking in third person (could be choppy)
 	ThirdPersonSensitivity = 3, -- Boundary: 0.1 - 5
-	TriggerKey = "MouseButton1",
+	TriggerKey = "LeftShift",
 	Toggle = false,
 	LockPart = "Head" -- Body part to lock on
 }
